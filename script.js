@@ -1,6 +1,25 @@
-let balance = 0;
+const telegramUserId = new URLSearchParams(window.location.search).get("user_id");
+let hashrate = 1;
 
-document.getElementById("mineBtn").addEventListener("click", () => {
-  balance += 0.00001;
-  document.getElementById("balance").innerText = `Saldo: ${balance.toFixed(5)} BEX`;
-});
+async function mine() {
+  const response = await fetch("http://localhost:5000/mine", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      user_id: telegramUserId,
+      hashrate: hashrate
+    }),
+  });
+
+  const data = await response.json();
+  if (data.success) {
+    document.getElementById("balance").textContent = `${data.balance.toFixed(2)} BEX`;
+    document.getElementById("hashrate").textContent = `${data.hashrate.toFixed(2)} H/s`;
+  } else {
+    alert("Mining failed: " + data.message);
+  }
+}
+
+document.getElementById("mine-btn").addEventListener("click", mine);
