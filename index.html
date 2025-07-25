@@ -1,82 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BEX Mining</title>
+  <meta charset="UTF-8">
+  <title>BEX Mining 🚀</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #0a0f2c;
-      color: #fff;
-      margin: 0;
-      padding: 0;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
       text-align: center;
+      padding: 40px 20px;
     }
-
-    .container {
+    h1 {
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
+    #balance {
+      font-size: 3em;
+      color: #00ffff;
+      margin: 10px 0 30px 0;
+      display: block;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      padding: 15px 30px;
+      font-size: 1.2em;
+      margin: 10px;
+      cursor: pointer;
+      transition: transform 0.2s, background-color 0.3s;
+    }
+    button:hover {
+      background-color: #00aaff;
+      transform: scale(1.05);
+    }
+    .footer {
       margin-top: 50px;
-      padding: 20px;
+      font-size: 0.9em;
+      color: #aaa;
     }
-
-    .logo {
+    img.logo {
       width: 100px;
       margin-bottom: 20px;
-    }
-
-    h1 {
-      color: #00aaff;
-    }
-
-    .balance-container {
-      font-size: 24px;
-      margin: 20px 0;
-    }
-
-    #mine-btn {
-      background-color: #00aaff;
-      border: none;
-      color: white;
-      padding: 15px 30px;
-      font-size: 18px;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    #mine-btn:hover {
-      background-color: #008ecc;
-    }
-
-    .info {
-      margin-top: 30px;
-      font-size: 16px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <img src="assets/logo.png" alt="BEX Logo" class="logo"/>
-    <h1>BEX Mining WebApp</h1>
-    <div class="balance-container">
-      <span id="balance">0.00 BEX</span>
-    </div>
-    <button id="mine-btn">TAP to Mine 🚀</button>
-    <div class="info">
-      <p>Hashrate: <span id="hashrate">1 H/s</span></p>
-      <p>Referral Bonus: 5%</p>
-    </div>
+
+  <img src="logo.png" alt="BEX Logo" class="logo" />
+  <h1>Saldo Anda</h1>
+  <span id="balance">0.00</span> BEX
+
+  <div>
+    <button onclick="mine()">TAP to Mine 🚀</button>
+    <button onclick="watchAd()">🎁 Klik Iklan</button>
+  </div>
+
+  <div class="footer">
+    © 2025 BEX Mining • All rights reserved
   </div>
 
   <script>
-    let balance = 0.0;
-    let hashrate = 1; // 1 H/s = 0.01 BEX
+    const user_id = localStorage.getItem("bex_user_id") || prompt("Masukkan Telegram ID Anda:");
+    localStorage.setItem("bex_user_id", user_id);
 
-    document.getElementById("mine-btn").addEventListener("click", () => {
-      const mined = hashrate * 0.01;
-      balance += mined;
-      document.getElementById("balance").textContent = balance.toFixed(2) + " BEX";
-    });
+    const server = "http://localhost:5000"; // Ganti dengan server IP jika online
+
+    async function updateBalance() {
+      const res = await fetch(`${server}/balance?user_id=${user_id}`);
+      const data = await res.json();
+      document.getElementById("balance").innerText = data.balance.toFixed(2);
+    }
+
+    async function mine() {
+      const res = await fetch(`${server}/mine`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id })
+      });
+      const data = await res.json();
+      document.getElementById("balance").innerText = data.balance.toFixed(2);
+    }
+
+    async function watchAd() {
+      const res = await fetch(`${server}/ads`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id })
+      });
+      const data = await res.json();
+      document.getElementById("balance").innerText = data.balance.toFixed(2);
+    }
+
+    window.onload = updateBalance;
   </script>
+
 </body>
 </html>
