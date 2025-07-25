@@ -21,5 +21,7 @@ async function mine() {
     alert("Mining failed: " + data.message);
   }
 }
-
+// Ambil user_id dari URL
+const urlParams = new URLSearchParams(window.location.search);
+const userId = urlParams.get("user_id");
 document.getElementById("mine-btn").addEventListener("click", mine);
