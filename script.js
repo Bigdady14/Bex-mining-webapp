@@ -1,27 +1,22 @@
-const telegramUserId = new URLSearchParams(window.location.search).get("user_id");
-let hashrate = 1;
 
-async function mine() {
-  const response = await fetch("http://localhost:5000/mine", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      user_id: telegramUserId,
-      hashrate: hashrate
-    }),
-  });
+const userId = "123"; // Ganti sesuai user ID Telegram
+const apiUrl = "http://127.0.0.1:5000"; // Ganti jika hosting berbeda
 
-  const data = await response.json();
-  if (data.success) {
-    document.getElementById("balance").textContent = `${data.balance.toFixed(2)} BEX`;
-    document.getElementById("hashrate").textContent = `${data.hashrate.toFixed(2)} H/s`;
-  } else {
-    alert("Mining failed: " + data.message);
-  }
+async function getBalance() {
+  const res = await fetch(`${apiUrl}/balance?user_id=${userId}`);
+  const data = await res.json();
+  document.getElementById("balance").innerText = `${data.balance} BEX`;
 }
-// Ambil user_id dari URL
-const urlParams = new URLSearchParams(window.location.search);
-const userId = urlParams.get("user_id");
-document.getElementById("mine-btn").addEventListener("click", mine);
+
+async function tapMine() {
+  const res = await fetch(`${apiUrl}/mine`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ user_id: userId })
+  });
+  const data = await res.json();
+  document.getElementById("balance").innerText = `${data.balance} BEX`;
+}
+
+document.getElementById("tapButton").addEventListener("click", tapMine);
+window.onload = getBalance;
