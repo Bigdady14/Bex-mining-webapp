@@ -20,3 +20,20 @@ async function tapMine() {
 
 document.getElementById("tapButton").addEventListener("click", tapMine);
 window.onload = getBalance;
+
+document.getElementById("tapBtn").addEventListener("click", () => {
+  fetch("http://localhost:5000/tap", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer a977876e-5025-44ef-9696-7c12e00be69c"
+    },
+    body: JSON.stringify({})
+  })
+  .then(res => res.json())
+  .then(data => {
+    console.log(data);
+    document.getElementById("status").innerText = data.message + " | hs: " + data.hs;
+  })
+  .catch(err => console.error("Error:", err));
+});
